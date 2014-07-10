@@ -67,4 +67,23 @@ class core_adhoc_task_testcase extends advanced_testcase {
         $task = \core\task\manager::get_next_adhoc_task($now);
         $this->assertNull($task);
     }
+
+    public function test_create_adhoc_task() {
+        $this->resetAfterTest(true);
+
+        // Create an adhoc task.
+        $task = new \core\task\adhoc_test_task();
+        $task->set_custom_data(array(
+            'test' => 'Test Value',
+            'anothertest' => 'Also a test value'
+        ));
+
+        // Check the record can be inserted.
+        $record = \core\task\manager::record_from_adhoc_task($task);
+        $this->assertFalse(is_object($record->customdata));
+
+        // Try inserting it.
+        $result = \core\task\manager::queue_adhoc_task($task);
+        $this->assertEquals(1, $result);
+    }
 }
