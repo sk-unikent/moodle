@@ -419,6 +419,12 @@ class manager {
                 $classname = '\\' . $record->classname;
                 $task = self::adhoc_task_from_record($record);
 
+                // MDL-46529 - The class may not still be available.
+                if (!$task) {
+                    $lock->release();
+                    continue;
+                }
+
                 $task->set_lock($lock);
                 if (!$task->is_blocking()) {
                     $cronlock->release();
