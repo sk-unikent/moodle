@@ -67,4 +67,36 @@ class core_adhoc_task_testcase extends advanced_testcase {
         $task = \core\task\manager::get_next_adhoc_task($now);
         $this->assertNull($task);
     }
+
+    public function test_adhoc_task_queue_fail() {
+        global $DB;
+
+        $this->resetAfterTest(true);
+
+        // Create a task that should fail.
+        $DB->insert_record('task_adhoc', array(
+            'id' => 1,
+            'classname' => 'thiswillfail',
+            'component' => 'core',
+            'blocking' => 0,
+            'nextruntime' => time() - 1,
+            'faildelay' => 0,
+            'customdata' => ''
+        ));
+
+
+        // Create an adhoc task.
+        $task = new \core\task\adhoc_test_task();
+
+        // Queue it.
+        $task = \core\task\manager::queue_adhoc_task($task);
+
+        // Get it from the scheduler, this will fail if get_next_adhoc_task returns the invalid
+        // object we created first.
+        $task = \core\task\manager::get_next_adhoc_task(time());
+        $this->assertNotNull($task);
+        $task->execute();
+
+        \core\task\manager::adhoc_task_complete($task);
+    }
 }
