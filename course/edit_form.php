@@ -121,6 +121,33 @@ class course_edit_form extends moodleform {
             }
         }
 
+        $choices = array();
+        $choices['0'] = new lang_string('no');
+        $choices['1'] = new lang_string('yes');
+        $mform->addElement('select', 'enablerecyclebin', get_string('recyclebin'), $choices);
+        $mform->addHelpButton('enablerecyclebin', 'recyclebin');
+        $mform->setDefault('enablerecyclebin', $courseconfig->enablerecyclebin);
+
+        $choices = array(
+            '0'    => new lang_string('recyclebinttlnever'),
+            '1000' => new lang_string('numdays', '', 1000),
+            '365'  => new lang_string('numdays', '', 365),
+            '180'  => new lang_string('numdays', '', 180),
+            '150'  => new lang_string('numdays', '', 150),
+            '120'  => new lang_string('numdays', '', 120),
+            '90'   => new lang_string('numdays', '', 90),
+            '60'   => new lang_string('numdays', '', 60),
+            '35'   => new lang_string('numdays', '', 35),
+            '21'   => new lang_string('numdays', '', 21),
+            '14'   => new lang_string('numdays', '', 14),
+            '10'   => new lang_string('numdays', '', 10),
+            '5'    => new lang_string('numdays', '', 5),
+            '2'    => new lang_string('numdays', '', 2)
+        );
+        $mform->addElement('select', 'recyclebinttl', get_string('recyclebinttl'), $choices);
+        $mform->addHelpButton('recyclebinttl', 'recyclebinttl');
+        $mform->setDefault('recyclebinttl', $courseconfig->recyclebinttl);
+
         $mform->addElement('date_selector', 'startdate', get_string('startdate'));
         $mform->addHelpButton('startdate', 'startdate');
         $mform->setDefault('startdate', time() + 3600 * 24);

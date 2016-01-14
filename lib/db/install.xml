@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="lib/db" VERSION="20160111" COMMENT="XMLDB file for core Moodle tables"
+<XMLDB PATH="lib/db" VERSION="20160115" COMMENT="XMLDB file for core Moodle tables"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../lib/xmldb/xmldb.xsd"
 >
@@ -98,6 +98,8 @@
         <FIELD NAME="requested" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="enablecompletion" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 = allow use of 'completion' progress-tracking on this course. 0 = disable completion tracking on this course."/>
         <FIELD NAME="completionnotify" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Notify users when they complete this course"/>
+        <FIELD NAME="enablerecyclebin" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="reyclebinttl" TYPE="int" LENGTH="4" NOTNULL="false" DEFAULT="21" SEQUENCE="false"/>
         <FIELD NAME="cacherev" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Incrementing revision for validating the course content cache"/>
       </FIELDS>
       <KEYS>
@@ -3098,6 +3100,20 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
+    </TABLE>
+    <TABLE NAME="backup_recyclebin" COMMENT="Recyclebin backups">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="contextid" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="data" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="deleted" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="i_contextid" UNIQUE="false" FIELDS="contextid"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>

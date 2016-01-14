@@ -164,6 +164,8 @@ $defaults['legacyfiles'] = $CFG->legacyfilesinnewcourses;
 $defaults['groupmode'] = $courseconfig->groupmode;
 $defaults['groupmodeforce'] = $courseconfig->groupmodeforce;
 $defaults['visible'] = $courseconfig->visible;
+$defaults['enablerecyclebin'] = $courseconfig->enablerecyclebin;
+$defaults['recyclebinttl'] = $courseconfig->recyclebinttl;
 $defaults['lang'] =  $courseconfig->lang;
 
 // Course template.

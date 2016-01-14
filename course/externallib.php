@@ -464,6 +464,8 @@ class core_course_external extends external_api {
                 $courseinfo['forcetheme'] = $course->theme;
                 $courseinfo['enablecompletion'] = $course->enablecompletion;
                 $courseinfo['completionnotify'] = $course->completionnotify;
+                $courseinfo['enablerecyclebin'] = $course->enablerecyclebin;
+                $courseinfo['recyclebinttl'] = $course->recyclebinttl;
                 $courseinfo['courseformatoptions'] = array();
                 foreach ($courseformatoptions as $key => $value) {
                     $courseinfo['courseformatoptions'][] = array(
@@ -533,11 +535,18 @@ class core_course_external extends external_api {
                             'timemodified' => new external_value(PARAM_INT,
                                     'timestamp when the course have been modified', VALUE_OPTIONAL),
                             'enablecompletion' => new external_value(PARAM_INT,
-                                    'Enabled, control via completion and activity settings. Disbaled,
+                                    'Enabled, control via completion and activity settings. Disabled,
                                         not shown in activity settings.',
                                     VALUE_OPTIONAL),
                             'completionnotify' => new external_value(PARAM_INT,
                                     '1: yes 0: no', VALUE_OPTIONAL),
+                            'enablerecyclebin' => new external_value(PARAM_INT,
+                                    'Enabled, recycle bin active. Disabled,
+                                    recycl ebin not active.',
+                                    VALUE_OPTIONAL),
+                            'recyclebinttl' => new external_value(PARAM_INT,
+                                    'Recycle bin item time to live.',
+                                    VALUE_OPTIONAL),
                             'lang' => new external_value(PARAM_SAFEDIR,
                                     'forced course language', VALUE_OPTIONAL),
                             'forcetheme' => new external_value(PARAM_PLUGIN,
@@ -610,6 +619,13 @@ class core_course_external extends external_api {
                                     VALUE_OPTIONAL),
                             'completionnotify' => new external_value(PARAM_INT,
                                     '1: yes 0: no', VALUE_OPTIONAL),
+                            'enablerecyclebin' => new external_value(PARAM_INT,
+                                    'Enabled, recycle bin active. Disabled,
+                                    recycl ebin not active.',
+                                    VALUE_OPTIONAL),
+                            'recyclebinttl' => new external_value(PARAM_INT,
+                                    'Recycle bin item time to live.',
+                                    VALUE_OPTIONAL),
                             'lang' => new external_value(PARAM_SAFEDIR,
                                     'forced course language', VALUE_OPTIONAL),
                             'forcetheme' => new external_value(PARAM_PLUGIN,
@@ -777,6 +793,13 @@ class core_course_external extends external_api {
                                     'Enabled, control via completion and activity settings. Disabled,
                                         not shown in activity settings.', VALUE_OPTIONAL),
                             'completionnotify' => new external_value(PARAM_INT, '1: yes 0: no', VALUE_OPTIONAL),
+                            'enablerecyclebin' => new external_value(PARAM_INT,
+                                    'Enabled, recycle bin active. Disabled,
+                                    recycl ebin not active.',
+                                    VALUE_OPTIONAL),
+                            'recyclebinttl' => new external_value(PARAM_INT,
+                                    'Recycle bin item time to live.',
+                                    VALUE_OPTIONAL),
                             'lang' => new external_value(PARAM_SAFEDIR, 'forced course language', VALUE_OPTIONAL),
                             'forcetheme' => new external_value(PARAM_PLUGIN, 'name of the force theme', VALUE_OPTIONAL),
                             'courseformatoptions' => new external_multiple_structure(

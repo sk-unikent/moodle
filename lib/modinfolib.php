@@ -59,7 +59,7 @@ class course_modinfo {
      * @var array
      */
     public static $cachedfields = array('shortname', 'fullname', 'format',
-            'enablecompletion', 'groupmode', 'groupmodeforce', 'cacherev');
+            'enablecompletion', 'groupmode', 'groupmodeforce', 'enablerecyclebin', 'recyclebinttl', 'cacherev');
 
     /**
      * For convenience we store the course object here as it is needed in other parts of code

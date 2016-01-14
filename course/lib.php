@@ -1679,6 +1679,9 @@ function course_delete_module($cmid) {
             "Cannot delete this module as the function {$modulename}_delete_instance is missing in mod/$modulename/lib.php.");
     }
 
+    // Notify the recycle bin.
+    core\recyclebin\module::delete_instance($modulename, $cm);
+
     // Delete activity context questions and question categories.
     question_delete_activity($cm);
 

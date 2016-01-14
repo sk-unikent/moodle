@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,24 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * MOODLE VERSION INFORMATION
- *
- * This file defines the current version of the core Moodle code being used.
- * This is compared against the values stored in the database to determine
- * whether upgrades should be performed (see lib/db/*.php)
+ * Defines classes used for the recyclebin.
  *
  * @package    core
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @copyright  2016 Skylar Kelty
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace core\recyclebin;
 
 defined('MOODLE_INTERNAL') || die();
 
-$version  = 2016011400.02;              // YYYYMMDD      = weekly release date of this DEV branch.
-                                        //         RR    = release increments - 00 in DEV branches.
-                                        //           .XX = incremental changes.
+/**
+ * Base API for the recyclebin.
+ */
+class base {
+    /**
+     * Returns items in a given context.
+     *
+     * @param \context|int $contextorid The context object (or ID) of the desired items.
+     */
+    public static function get_context_items($contextorid) {
+        global $DB;
 
-$release  = '3.1dev (Build: 20160114)'; // Human-friendly version name
+        $contextid = is_object($contextorid) ? $contextorid->id : $contextorid;
 
-$branch   = '31';                       // This version's branch.
-$maturity = MATURITY_ALPHA;             // This version's maturity level.
+        $items = array();
+
+        $rs = $DB->get_recordset('backup_recyclebin', array('contextid' => $contextid));
+        foreach ($rs as $record) {
+            $items[] = item::from_record($record);
+        }
+        $rs->close();
+
+        return $items;
+    }
+}

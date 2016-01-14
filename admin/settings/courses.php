@@ -63,6 +63,31 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $temp->add(new admin_setting_configselect('moodlecourse/visible', new lang_string('visible'), new lang_string('visible_help'),
         1, $choices));
 
+    $choices = array();
+    $choices['0'] = new lang_string('no');
+    $choices['1'] = new lang_string('yes');
+    $temp->add(new admin_setting_configselect('moodlecourse/recyclebin', new lang_string('recyclebin'), new lang_string('recyclebin_help'),
+        1, $choices));
+
+    $choices = array(
+        '0'    => new lang_string('recyclebinttlnever'),
+        '1000' => new lang_string('numdays', '', 1000),
+        '365'  => new lang_string('numdays', '', 365),
+        '180'  => new lang_string('numdays', '', 180),
+        '150'  => new lang_string('numdays', '', 150),
+        '120'  => new lang_string('numdays', '', 120),
+        '90'   => new lang_string('numdays', '', 90),
+        '60'   => new lang_string('numdays', '', 60),
+        '35'   => new lang_string('numdays', '', 35),
+        '21'   => new lang_string('numdays', '', 21),
+        '14'   => new lang_string('numdays', '', 14),
+        '10'   => new lang_string('numdays', '', 10),
+        '5'    => new lang_string('numdays', '', 5),
+        '2'    => new lang_string('numdays', '', 2)
+    );
+    $temp->add(new admin_setting_configselect('moodlecourse/recyclebinttl', new lang_string('recyclebinttl'), new lang_string('recyclebinttl_help'),
+        21, $choices));
+
     // Course format.
     $temp->add(new admin_setting_heading('courseformathdr', new lang_string('type_format', 'plugin'), ''));
 
