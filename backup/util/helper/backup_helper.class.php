@@ -257,25 +257,21 @@ abstract class backup_helper {
         $ctxid     = 0;
         $filearea  = '';
         $component = '';
-        $itemid    = 0;
         switch ($backuptype) {
             case backup::TYPE_1ACTIVITY:
                 $ctxid     = context_module::instance($id)->id;
                 $component = 'backup';
                 $filearea  = 'activity';
-                $itemid    = 0;
                 break;
             case backup::TYPE_1SECTION:
                 $ctxid     = context_course::instance($courseid)->id;
                 $component = 'backup';
                 $filearea  = 'section';
-                $itemid    = $id;
                 break;
             case backup::TYPE_1COURSE:
                 $ctxid     = context_course::instance($courseid)->id;
                 $component = 'backup';
                 $filearea  = 'course';
-                $itemid    = 0;
                 break;
         }
 
@@ -315,7 +311,6 @@ abstract class backup_helper {
             $ctxid     = context_user::instance($userid)->id;
             $component = 'user';
             $filearea  = 'tohub';
-            $itemid    = 0;
         }
 
         // Backups without user info or with the anonymise functionality
@@ -326,7 +321,6 @@ abstract class backup_helper {
             $ctxid     = context_user::instance($userid)->id;
             $component = 'user';
             $filearea  = 'backup';
-            $itemid    = 0;
         }
 
         // Let's send the file to file storage, everything already defined
@@ -335,7 +329,7 @@ abstract class backup_helper {
             'contextid'   => $ctxid,
             'component'   => $component,
             'filearea'    => $filearea,
-            'itemid'      => $itemid,
+            'itemid'      => $id,
             'filepath'    => '/',
             'filename'    => $filename,
             'userid'      => $userid,
