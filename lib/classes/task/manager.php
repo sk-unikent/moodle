@@ -132,14 +132,14 @@ class manager {
      * @return boolean - True if the config was saved.
      */
     public static function queue_adhoc_task(adhoc_task $task) {
-        global $DB;
+        $result = false;
 
-        $record = self::record_from_adhoc_task($task);
-        // Schedule it immediately if nextruntime not explicitly set.
-        if (!$task->get_next_run_time()) {
-            $record->nextruntime = time() - 1;
+        $queues = \tool_adhoc\manager::get_queues();
+        foreach ($queues as $queue) {
+            if ($queue->is_ready()) {
+                $result &= $queue->push($task);
+            }
         }
-        $result = $DB->insert_record('task_adhoc', $record);
 
         return $result;
     }
