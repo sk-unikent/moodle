@@ -129,19 +129,31 @@ class manager {
      * Queue an adhoc task to run in the background.
      *
      * @param \core\task\adhoc_task $task - The new adhoc task information to store.
-     * @return boolean - True if the config was saved.
+     * @return int - ID of the adhoc task.
      */
     public static function queue_adhoc_task(adhoc_task $task) {
         global $DB;
 
         $record = self::record_from_adhoc_task($task);
+
         // Schedule it immediately if nextruntime not explicitly set.
         if (!$task->get_next_run_time()) {
             $record->nextruntime = time() - 1;
         }
-        $result = $DB->insert_record('task_adhoc', $record);
 
-        return $result;
+        // Insert into the database.
+        $id = $DB->insert_record('task_adhoc', $record);
+        $task->set_id($id);
+
+        // Schedule with the appropriate queues.
+        $queues = \tool_adhoc\manager::get_queues();
+        foreach ($queues as $queue) {
+            if ($queue->is_ready()) {
+                $queue->push($task);
+            }
+        }
+
+        return $id;
     }
 
     /**
@@ -159,7 +171,9 @@ class manager {
             $classname = '\\' . $classname;
         }
 
-        $original = $DB->get_record('task_scheduled', array('classname'=>$classname), 'id', MUST_EXIST);
+        $original = $DB->get_record('task_scheduled', array(
+            'classname' => $classname
+        ), 'id', MUST_EXIST);
 
         $record = self::record_from_scheduled_task($task);
         $record->id = $original->id;
@@ -214,6 +228,7 @@ class manager {
         $record->blocking = $task->is_blocking();
         $record->nextruntime = $task->get_next_run_time();
         $record->faildelay = $task->get_fail_delay();
+        $record->priority = $task->get_priority();
         $record->customdata = $task->get_custom_data_as_string();
 
         return $record;
@@ -230,24 +245,35 @@ class manager {
         if (strpos($classname, '\\') !== 0) {
             $classname = '\\' . $classname;
         }
+
         if (!class_exists($classname)) {
             debugging("Failed to load task: " . $classname, DEBUG_DEVELOPER);
             return false;
         }
+
         $task = new $classname;
         if (isset($record->nextruntime)) {
             $task->set_next_run_time($record->nextruntime);
         }
+
         if (isset($record->id)) {
             $task->set_id($record->id);
         }
+
         if (isset($record->component)) {
             $task->set_component($record->component);
         }
+
         $task->set_blocking(!empty($record->blocking));
+
         if (isset($record->faildelay)) {
             $task->set_fail_delay($record->faildelay);
         }
+
+        if (isset($record->priority)) {
+            $task->set_priority($record->priority);
+        }
+
         if (isset($record->customdata)) {
             $task->set_custom_data_as_string($record->customdata);
         }
@@ -417,10 +443,9 @@ class manager {
 
         $where = '(nextruntime IS NULL OR nextruntime < :timestart1)';
         $params = array('timestart1' => $timestart);
-        $records = $DB->get_records_select('task_adhoc', $where, $params);
+        $records = $DB->get_records_select('task_adhoc', $where, $params, 'priority ASC');
 
         foreach ($records as $record) {
-
             if ($lock = $cronlockfactory->get_lock('adhoc_' . $record->id, 10)) {
                 $classname = '\\' . $record->classname;
                 $task = self::adhoc_task_from_record($record);

@@ -40,6 +40,9 @@ abstract class adhoc_task extends task_base {
     /** @var integer|null $id - Adhoc tasks each have their own database record id. */
     private $id = null;
 
+    /** @var integer $priority - The integer priority of the task. Higher values should be picked off the queue last. */
+    private $priority = 512;
+
     /**
      * Setter for $id.
      * @param int|null $id
@@ -54,6 +57,22 @@ abstract class adhoc_task extends task_base {
      */
     public function get_id() {
         return $this->id;
+    }
+
+    /**
+     * Setter for $priority.
+     * @param int|null $priority
+     */
+    public function set_priority($priority) {
+        $this->priority = $priority;
+    }
+
+    /**
+     * Getter for $priority.
+     * @return int|null $priority
+     */
+    public function get_priority() {
+        return $this->priority;
     }
 
     /**

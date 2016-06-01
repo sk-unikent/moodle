@@ -2072,5 +2072,30 @@ function xmldb_main_upgrade($oldversion) {
     // Moodle v3.1.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2016052300.02) {
+        // Add new column for priority support in adhoc tasks.
+
+        // Define field priority to be added to task_adhoc, we create it as null first and will change to notnull later.
+        $table = new xmldb_table('task_adhoc');
+        $field = new xmldb_field('priority', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'faildelay');
+
+        // Conditionally launch add field tagcloudid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define index priority (unique) to be added to task_adhoc.
+        $table = new xmldb_table('task_adhoc');
+        $index = new xmldb_index('priority', XMLDB_INDEX_NOTUNIQUE, array('nextruntime', 'priority'));
+
+        // Conditionally launch add index taggeditem.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2016052300.02);
+    }
+
     return true;
 }
