@@ -3414,6 +3414,9 @@ class core_course_courselib_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
         $this->setAdminUser();
 
+        // Ensure the cron queue is enabled.
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
+
         // Ensure recyclebin is enabled.
         set_config('coursebinenable', true, 'tool_recyclebin');
 
@@ -3535,6 +3538,9 @@ class core_course_courselib_testcase extends advanced_testcase {
         global $DB, $USER;
         $this->resetAfterTest(true);
         $this->setAdminUser();
+
+        // Ensure the cron queue is enabled.
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
 
         // Ensure recyclebin is enabled.
         set_config('coursebinenable', true, 'tool_recyclebin');

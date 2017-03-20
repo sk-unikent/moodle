@@ -2570,7 +2570,7 @@ function xmldb_main_upgrade($oldversion) {
         $record = new \stdClass();
         $record->classname = "\\core\\task\\refresh_mod_calendar_events_task";
         $record->component = 'core';
-        // Next run time based from nextruntime computation in \core\task\manager::queue_adhoc_task().
+        // Next run time based from nextruntime computation in \tool_adhoc\manager::queue_adhoc_task().
         $nextruntime = time() - 1;
         $record->nextruntime = $nextruntime;
         $DB->insert_record('task_adhoc', $record);

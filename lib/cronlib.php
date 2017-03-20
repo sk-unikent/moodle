@@ -68,50 +68,6 @@ function cron_run() {
         unset($task);
     }
 
-    // Run all adhoc tasks.
-    while (!\core\task\manager::static_caches_cleared_since($timenow) &&
-           $task = \core\task\manager::get_next_adhoc_task($timenow)) {
-        mtrace("Execute adhoc task: " . get_class($task));
-        cron_trace_time_and_memory();
-        $predbqueries = null;
-        $predbqueries = $DB->perf_get_queries();
-        $pretime      = microtime(1);
-        try {
-            get_mailer('buffer');
-            $task->execute();
-            if ($DB->is_transaction_started()) {
-                throw new coding_exception("Task left transaction open");
-            }
-            if (isset($predbqueries)) {
-                mtrace("... used " . ($DB->perf_get_queries() - $predbqueries) . " dbqueries");
-                mtrace("... used " . (microtime(1) - $pretime) . " seconds");
-            }
-            mtrace("Adhoc task complete: " . get_class($task));
-            \core\task\manager::adhoc_task_complete($task);
-        } catch (Exception $e) {
-            if ($DB && $DB->is_transaction_started()) {
-                error_log('Database transaction aborted automatically in ' . get_class($task));
-                $DB->force_transaction_rollback();
-            }
-            if (isset($predbqueries)) {
-                mtrace("... used " . ($DB->perf_get_queries() - $predbqueries) . " dbqueries");
-                mtrace("... used " . (microtime(1) - $pretime) . " seconds");
-            }
-            mtrace("Adhoc task failed: " . get_class($task) . "," . $e->getMessage());
-            if ($CFG->debugdeveloper) {
-                 if (!empty($e->debuginfo)) {
-                    mtrace("Debug info:");
-                    mtrace($e->debuginfo);
-                }
-                mtrace("Backtrace:");
-                mtrace(format_backtrace($e->getTrace(), true));
-            }
-            \core\task\manager::adhoc_task_failed($task);
-        }
-        get_mailer('close');
-        unset($task);
-    }
-
     mtrace("Cron script completed correctly");
 
     gc_collect_cycles();

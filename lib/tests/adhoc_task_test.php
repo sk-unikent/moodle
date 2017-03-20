@@ -43,11 +43,13 @@ class core_adhoc_task_testcase extends advanced_testcase {
     public function test_get_next_adhoc_task_now() {
         $this->resetAfterTest(true);
 
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
+
         // Create an adhoc task.
         $task = new \core\task\adhoc_test_task();
 
         // Queue it.
-        \core\task\manager::queue_adhoc_task($task);
+        \tool_adhoc\manager::queue_adhoc_task($task);
 
         $now = time();
         // Get it from the scheduler.
@@ -63,9 +65,11 @@ class core_adhoc_task_testcase extends advanced_testcase {
     public function test_get_next_adhoc_task_fail_retry() {
         $this->resetAfterTest(true);
 
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
+
         // Create an adhoc task.
         $task = new \core\task\adhoc_test_task();
-        \core\task\manager::queue_adhoc_task($task);
+        \tool_adhoc\manager::queue_adhoc_task($task);
 
         $now = time();
 
@@ -94,11 +98,13 @@ class core_adhoc_task_testcase extends advanced_testcase {
     public function test_get_next_adhoc_task_future() {
         $this->resetAfterTest(true);
 
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
+
         $now = time();
         // Create an adhoc task in future.
         $task = new \core\task\adhoc_test_task();
         $task->set_next_run_time($now + 1000);
-        \core\task\manager::queue_adhoc_task($task);
+        \tool_adhoc\manager::queue_adhoc_task($task);
 
         // Fetching the next task should not return anything.
         $this->assertNull(\core\task\manager::get_next_adhoc_task($now));

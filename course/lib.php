@@ -1284,7 +1284,7 @@ function course_module_flag_for_async_deletion($cmid) {
     ));
 
     // Queue the task for the next run.
-    \core\task\manager::queue_adhoc_task($removaltask);
+    \tool_adhoc\manager::queue_adhoc_task($removaltask);
 
     // Reset the course cache to hide the module.
     rebuild_course_cache($cm->course, true);
@@ -1528,7 +1528,7 @@ function course_delete_section_async($section, $forcedeleteifnotempty = true) {
         'realuserid' => \core\session\manager::get_realuser()->id
     );
     $removaltask->set_custom_data($data);
-    \core\task\manager::queue_adhoc_task($removaltask);
+    \tool_adhoc\manager::queue_adhoc_task($removaltask);
 
     // Delete the now empty section, passing in only the section number, which forces the function to fetch a new object.
     // The refresh is needed because the section->sequence is now stale.

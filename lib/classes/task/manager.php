@@ -130,18 +130,15 @@ class manager {
      *
      * @param \core\task\adhoc_task $task - The new adhoc task information to store.
      * @return boolean - True if the config was saved.
+     * @deprecated since Moodle 3.3
      */
     public static function queue_adhoc_task(adhoc_task $task) {
-        global $DB;
+        debugging(
+            'core\task\manager::queue_adhoc_task has been deprecated. Please use tool_adhoc\manager::queue_adhoc_task instead.',
+            DEBUG_DEVELOPER
+        );
 
-        $record = self::record_from_adhoc_task($task);
-        // Schedule it immediately if nextruntime not explicitly set.
-        if (!$task->get_next_run_time()) {
-            $record->nextruntime = time() - 1;
-        }
-        $result = $DB->insert_record('task_adhoc', $record);
-
-        return $result;
+        return \tool_adhoc\manager::queue_adhoc_task($task);
     }
 
     /**

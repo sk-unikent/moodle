@@ -218,7 +218,7 @@ class eventobservers {
             $adhocktask = new notification_task();
             $adhocktask->set_custom_data($messagestosend);
             $adhocktask->set_component('tool_monitor');
-            \core\task\manager::queue_adhoc_task($adhocktask);
+            \tool_adhoc\manager::queue_adhoc_task($adhocktask);
         }
     }
 

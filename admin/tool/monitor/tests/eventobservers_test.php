@@ -227,6 +227,9 @@ class tool_monitor_eventobservers_testcase extends advanced_testcase {
         $this->setAdminUser();
         $msgsink = $this->redirectMessages();
 
+        // Ensure the cron queue is enabled.
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
+
         // Generate data.
         $course = $this->getDataGenerator()->create_course();
         $toolgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
@@ -363,6 +366,9 @@ class tool_monitor_eventobservers_testcase extends advanced_testcase {
         $this->setAdminUser();
         $messagesink = $this->redirectMessages();
 
+        // Ensure the cron queue is enabled.
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
+
         // Generate data.
         $course = $this->getDataGenerator()->create_course();
         $toolgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
@@ -450,6 +456,9 @@ class tool_monitor_eventobservers_testcase extends advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $msgsink = $this->redirectMessages();
+
+        // Ensure the cron queue is enabled.
+        set_config('enabled_queues', 'queue_cron', 'tool_adhoc');
 
         // Generate data.
         $course = $this->getDataGenerator()->create_course();
