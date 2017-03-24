@@ -267,6 +267,8 @@ function get_role_access($roleid) {
 
 /**
  * Fetch raw "site wide" role definitions.
+ * Even MUC static acceleration cache appears a bit slow for this.
+ * Important as can be hit hundreds of times per page.
  *
  * @param array $roleids List of role ids to fetch definitions for.
  * @return array Complete definition for each requested role.
@@ -278,22 +280,17 @@ function get_role_definitions(array $roleids) {
         return array();
     }
 
-    // Do we have all of the roleids already in static cache?
-    $result = array_intersect($roleids, array_keys($ACCESSLIB_PRIVATE->cacheroledefs));
-    if (count($roleids) === count($result)) {
-        return $ACCESSLIB_PRIVATE->cacheroledefs;
-    }
-
-    // Even MUC static acceleration cache appears a bit slow for this.
-    // Important as can be hit hundreds of times per page.
-    $cache = cache::make('core', 'roledefs');
-    $ACCESSLIB_PRIVATE->cacheroledefs = array_filter($cache->get_many($roleids));
-
     // Grab all keys we have not yet got in our static cache.
     if ($uncached = array_diff($roleids, array_keys($ACCESSLIB_PRIVATE->cacheroledefs))) {
-        $uncached = get_role_definitions_uncached($uncached);
-        $ACCESSLIB_PRIVATE->cacheroledefs += $uncached;
-        $cache->set_many($uncached);
+        $cache = cache::make('core', 'roledefs');
+        $ACCESSLIB_PRIVATE->cacheroledefs += array_filter($cache->get_many($uncached));
+
+        // Check we have the remaining keys from the MUC.
+        if ($uncached = array_diff($roleids, array_keys($ACCESSLIB_PRIVATE->cacheroledefs))) {
+            $uncached = get_role_definitions_uncached($uncached);
+            $ACCESSLIB_PRIVATE->cacheroledefs += $uncached;
+            $cache->set_many($uncached);
+        }
     }
 
     // Return just the keys we need.
