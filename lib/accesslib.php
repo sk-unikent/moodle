@@ -296,8 +296,8 @@ function get_role_definitions(array $roleids) {
         }
     }
 
-    // Return just the keys we need.
-    return array_intersect($roleids, array_keys($ACCESSLIB_PRIVATE->cacheroledefs));
+    // Return just the roles we need.
+    return array_intersect_key($ACCESSLIB_PRIVATE->cacheroledefs, array_flip($roleids));
 }
 
 /**
