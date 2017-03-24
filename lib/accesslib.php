@@ -219,6 +219,9 @@ function accesslib_clear_all_caches($resetcontexts) {
     $ACCESSLIB_PRIVATE->dirtycontexts    = null;
     $ACCESSLIB_PRIVATE->accessdatabyuser = array();
 
+    $cache = cache::make('core', 'roledefs');
+    $cache->purge();
+
     if ($resetcontexts) {
         context_helper::reset_caches();
     }
