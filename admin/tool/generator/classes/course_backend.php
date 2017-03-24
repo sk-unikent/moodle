@@ -77,6 +77,10 @@ class tool_generator_course_backend extends tool_generator_backend {
      * @var array Number of forum posts per discussion
      */
     private static $paramforumposts = array(2, 2, 5, 10, 10, 10);
+    /**
+     * @var array Number of role overrides per activity/course
+     */
+    private static $paramroleoverrides = array(2, 10, 25, 50, 100, 250);
 
     /**
      * @var string Course shortname
@@ -231,6 +235,9 @@ class tool_generator_course_backend extends tool_generator_backend {
         $this->create_users();
         $this->create_forum();
 
+        // Create some role overrides.
+        $this->create_role_overrides(context_course::instance($this->course->id));
+
         // Log total time.
         $this->log('coursecompleted', round(microtime(true) - $entirestart, 1));
 
@@ -382,7 +389,12 @@ class tool_generator_course_backend extends tool_generator_backend {
         for ($i = 0; $i < $number; $i++) {
             $record = array('course' => $this->course);
             $options = array('section' => $this->get_target_section());
-            $assigngenerator->create_instance($record, $options);
+            $assignment = $assigngenerator->create_instance($record, $options);
+
+            // Create some role overrides.
+            $context = context_module::instance($assignment->cmid);
+            $this->create_role_overrides($context);
+
             $this->dot($i, $number);
         }
 
@@ -402,7 +414,12 @@ class tool_generator_course_backend extends tool_generator_backend {
         for ($i = 0; $i < $number; $i++) {
             $record = array('course' => $this->course);
             $options = array('section' => $this->get_target_section());
-            $pagegenerator->create_instance($record, $options);
+            $page = $pagegenerator->create_instance($record, $options);
+
+            // Create some role overrides.
+            $context = context_module::instance($page->cmid);
+            $this->create_role_overrides($context);
+
             $this->dot($i, $number);
         }
 
@@ -438,6 +455,9 @@ class tool_generator_course_backend extends tool_generator_backend {
             $fs->create_file_from_string($filerecord, $data);
             $this->dot($i, $count);
         }
+
+        // Create some role overrides.
+        $this->create_role_overrides($context);
 
         $this->end_log();
     }
@@ -486,6 +506,9 @@ class tool_generator_course_backend extends tool_generator_backend {
                     'contextid' => $context->id, 'itemid' => 0, 'filepath' => '/',
                     'filename' => 'bigfile' . $i . '.dat');
             $fs->create_file_from_pathname($filerecord, $tempfile);
+
+            // Create some role overrides.
+            $this->create_role_overrides($context);
         }
 
         unlink($tempfile);
@@ -527,7 +550,39 @@ class tool_generator_course_backend extends tool_generator_backend {
             }
         }
 
+        // Create some role overrides.
+        $context = context_module::instance($forum->cmid);
+        $this->create_role_overrides($context);
+
         $this->end_log();
+    }
+
+    /**
+     * Creates a bunch of role overrides for the given context.
+     */
+    private function create_role_overrides($context) {
+        global $DB;
+
+        $roleoverrides = self::$paramroleoverrides[$this->size];
+
+        // Grab a set of data to use.
+        $role = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
+        $caps = $DB->get_records('role_capabilities', array(
+            'roleid' => $role->id,
+            'contextid' => 1
+        ));
+        $caps = array_values($caps);
+
+        for ($i = 0; $i < $roleoverrides; $i++) {
+            // Choose a capability, basically copy it but as an override.
+            // We don't want to screw up any of the tests or introduce noise, but we do want to stress accesslib.
+            if (!isset($caps[$i])) {
+                break;
+            }
+            $capability = $caps[$i];
+
+            assign_capability($capability->capability, $capability->permission, $role->id, $context, true);
+        }
     }
 
     /**
