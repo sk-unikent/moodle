@@ -285,7 +285,7 @@ function get_role_definitions(array $roleids) {
     }
 
     // Return just the keys we need.
-    return array_intersect($roleids, array_keys($cacheroledefs));
+    return array_intersect_key($cacheroledefs, array_flip($roleids));
 }
 
 /**
