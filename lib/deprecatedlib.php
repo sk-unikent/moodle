@@ -6532,7 +6532,7 @@ function message_get_recent_conversations($userorid, $limitfrom = 0, $limitto = 
  * Previous internal API, it was not supposed to be used anywhere.
  *
  * @access private
- * @deprecated since Moodle 3.1 and removed immediately. MDL-49398.
+ * @deprecated since Moodle 3.3 and removed immediately. MDL-49398.
  * @param int $userid the id of the user
  * @param context_course $coursecontext course context
  * @param array $accessdata accessdata array (modified)
@@ -6546,7 +6546,7 @@ function load_course_context($userid, context_course $coursecontext, &$accessdat
  * Previous internal API, it was not supposed to be used anywhere.
  *
  * @access private
- * @deprecated since Moodle 3.1 and removed immediately. MDL-49398.
+ * @deprecated since Moodle 3.3 and removed immediately. MDL-49398.
  * @param int $roleid the id of the user
  * @param context $context needs path!
  * @param array $accessdata accessdata array (is modified)
@@ -6560,7 +6560,7 @@ function load_role_access_by_context($roleid, context $context, &$accessdata) {
  * Previous internal API, it was not supposed to be used anywhere.
  *
  * @access private
- * @deprecated since Moodle 3.1 and removed immediately. MDL-49398.
+ * @deprecated since Moodle 3.3 and removed immediately. MDL-49398.
  * @return void
  */
 function dedupe_user_access() {
@@ -6576,7 +6576,7 @@ function dedupe_user_access() {
  * [rdef] => ["$contextpath:$roleid"][capability]=permission
  *
  * @access private
- * @deprecated since Moodle 3.1. MDL-49398.
+ * @deprecated since Moodle 3.3. MDL-49398.
  * @param int $userid - the id of the user
  * @return array access info array
  */
