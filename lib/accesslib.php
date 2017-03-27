@@ -284,12 +284,13 @@ function get_role_definitions(array $roleids) {
     }
 
     // Grab all keys we have not yet got in our static cache.
-    if ($uncached = array_diff($roleids, array_keys($ACCESSLIB_PRIVATE->cacheroledefs))) {
+    $roleids = array_combine($roleids, $roleids);
+    if ($uncached = array_diff_key($roleids, $ACCESSLIB_PRIVATE->cacheroledefs)) {
         $cache = cache::make('core', 'roledefs');
         $ACCESSLIB_PRIVATE->cacheroledefs += array_filter($cache->get_many($uncached));
 
         // Check we have the remaining keys from the MUC.
-        if ($uncached = array_diff($roleids, array_keys($ACCESSLIB_PRIVATE->cacheroledefs))) {
+        if ($uncached = array_diff_key($roleids, $ACCESSLIB_PRIVATE->cacheroledefs)) {
             $uncached = get_role_definitions_uncached($uncached);
             $ACCESSLIB_PRIVATE->cacheroledefs += $uncached;
             $cache->set_many($uncached);
@@ -297,7 +298,7 @@ function get_role_definitions(array $roleids) {
     }
 
     // Return just the roles we need.
-    return array_intersect_key($ACCESSLIB_PRIVATE->cacheroledefs, array_flip($roleids));
+    return array_intersect_key($ACCESSLIB_PRIVATE->cacheroledefs, $roleids);
 }
 
 /**
