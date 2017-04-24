@@ -1685,12 +1685,13 @@ function upgrade_themes() {
     theme_build_css_for_themes([$themeconfig], [$direction]);
 
     // Only queue the task if there isn't already one queued.
-    if (empty(\core\task\manager::get_adhoc_tasks('\\core\\task\\build_installed_themes_task'))) {
+    $manager = \core\task\manager::get_adhoc_manager();
+    if (empty($manager->get_adhoc_tasks('\\core\\task\\build_installed_themes_task'))) {
         // Queue a task to build all of the site themes at some point
         // later. These can happen offline because it doesn't block the
         // user unless they quickly change theme.
         $adhoctask = new \core\task\build_installed_themes_task();
-        \core\task\manager::queue_adhoc_task($adhoctask);
+        $manager->queue_adhoc_task($adhoctask);
     }
 }
 

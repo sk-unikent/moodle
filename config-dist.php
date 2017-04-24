@@ -876,6 +876,16 @@ $CFG->admin = 'admin';
 //      $CFG->alternative_file_system_class = '\\local_myfilestorage\\file_system';
 //
 //=========================================================================
+// 15. ALTERNATIVE ADHOC QUEUE SETTINGS
+//=========================================================================
+//
+// Alternative queue system.
+// Since 3.5 it is possible to override the adhoc task queue manager,
+// allowing you to use alternative task queuing systems (e.g. Redis, beanstalkd etc.)
+//
+//      $CFG->queue_manager = '\\local_myadhocrunner\\queue_manager';
+//
+//=========================================================================
 // ALL DONE!  To continue installation, visit your main page with a browser
 //=========================================================================
 

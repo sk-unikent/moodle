@@ -1031,16 +1031,17 @@ class behat_general extends behat_base {
         // Run tasks. Locking is handled by get_next_adhoc_task.
         $now = time();
         ob_start(); // Discard task output as not appropriate for Behat output!
-        while (($task = \core\task\manager::get_next_adhoc_task($now)) !== null) {
+        $manager = \core\task\manager::get_adhoc_manager();
+        while (($task = $manager->get_next_adhoc_task($now)) !== null) {
 
             try {
                 $task->execute();
 
                 // Mark task complete.
-                \core\task\manager::adhoc_task_complete($task);
+                $manager->adhoc_task_complete($task);
             } catch (Exception $e) {
                 // Mark task failed and throw exception.
-                \core\task\manager::adhoc_task_failed($task);
+                $manager->adhoc_task_failed($task);
                 ob_end_clean();
                 throw new DriverException('An adhoc task failed', 0, $e);
             }

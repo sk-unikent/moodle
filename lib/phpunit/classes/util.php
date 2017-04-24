@@ -849,12 +849,13 @@ class phpunit_util extends testing_util {
      */
     public static function run_all_adhoc_tasks() {
         $now = time();
-        while (($task = \core\task\manager::get_next_adhoc_task($now)) !== null) {
+        $manager = \core\task\manager::get_adhoc_manager();
+        while (($task = $manager->get_next_adhoc_task($now)) !== null) {
             try {
                 $task->execute();
-                \core\task\manager::adhoc_task_complete($task);
+                $manager->adhoc_task_complete($task);
             } catch (Exception $e) {
-                \core\task\manager::adhoc_task_failed($task);
+                $manager->adhoc_task_failed($task);
             }
         }
     }
