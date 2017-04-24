@@ -404,9 +404,10 @@ class tool_monitor_eventobservers_testcase extends advanced_testcase {
      * Run adhoc tasks.
      */
     protected function run_adhock_tasks() {
-        while ($task = \core\task\manager::get_next_adhoc_task(time())) {
+        $manager = \core\task\manager::get_adhoc_manager();
+        while ($task = $manager->get_next_adhoc_task(time())) {
             $task->execute();
-            \core\task\manager::adhoc_task_complete($task);
+            $manager->adhoc_task_complete($task);
         }
         $this->expectOutputRegex("/^Sending message to the user with id \d+ for the subscription with id \d+\.\.\..Sent./ms");
     }
