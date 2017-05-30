@@ -6570,7 +6570,6 @@ function calendar_cron() {
     return true;
 }
 
-
 /**
  * Previous internal API, it was not supposed to be used anywhere.
  *

@@ -235,7 +235,7 @@ function accesslib_clear_all_caches($resetcontexts) {
  * This reset does not touch global $USER.
  *
  * @access private
- * @param int $roles
+ * @param int|array $roles
  * @return void
  */
 function accesslib_clear_role_cache($roles) {
@@ -317,10 +317,10 @@ function get_role_definitions_uncached(array $roleids) {
     $rdefs = array();
 
     $sql = "SELECT ctx.path, rc.roleid, rc.capability, rc.permission
-            FROM {role_capabilities} rc
-            JOIN {context} ctx ON rc.contextid = ctx.id
-            WHERE rc.roleid $sql
-            ORDER BY ctx.path, rc.roleid, rc.capability";
+              FROM {role_capabilities} rc
+              JOIN {context} ctx ON rc.contextid = ctx.id
+             WHERE rc.roleid $sql
+          ORDER BY ctx.path, rc.roleid, rc.capability";
     $rs = $DB->get_recordset_sql($sql, $params);
 
     foreach ($rs as $rd) {
@@ -838,9 +838,9 @@ function get_user_roles_sitewide_accessdata($userid) {
 
     // Preload every assigned role.
     $sql = "SELECT ctx.path, ra.roleid, ra.contextid
-            FROM {role_assignments} ra
-            JOIN {context} ctx ON ctx.id = ra.contextid
-            WHERE ra.userid = :userid";
+              FROM {role_assignments} ra
+              JOIN {context} ctx ON ctx.id = ra.contextid
+             WHERE ra.userid = :userid";
 
     $rs = $DB->get_recordset_sql($sql, array('userid' => $userid));
 
