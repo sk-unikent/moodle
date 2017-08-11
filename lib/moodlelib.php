@@ -5189,6 +5189,7 @@ function reset_course_userdata($data) {
     require_once($CFG->libdir.'/gradelib.php');
     require_once($CFG->libdir.'/completionlib.php');
     require_once($CFG->dirroot.'/completion/criteria/completion_criteria_date.php');
+    require_once($CFG->dirroot.'/course/lib.php');
     require_once($CFG->dirroot.'/group/lib.php');
 
     $data->courseid = $data->id;
