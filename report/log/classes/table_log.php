@@ -467,8 +467,9 @@ class report_log_table_log extends table_sql {
                 $joins[] = 'userid = 0'; // No users in groups, so we want something that will always be false.
             }
         } else if (!empty($this->filterparams->userid)) {
-            $joins[] = "userid = :userid";
+            $joins[] = "(userid = :userid OR relateduserid = :reluserid)";
             $params['userid'] = $this->filterparams->userid;
+            $params['reluserid'] = $this->filterparams->userid;
         }
 
         if (!empty($this->filterparams->date)) {
